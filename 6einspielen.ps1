@@ -1,7 +1,7 @@
 param (
 [String]$Server="",
-[String]$User="sa",
-[String]$PW="manager",
+[String]$User="",
+[String]$PW="r",
 [String]$DB="",
 [String]$Ort="",
 [String]$NW="",
@@ -48,15 +48,15 @@ $RelocateData = New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($MDFN
 $RelocateNDF = New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($NDFName, $NDFDatei)
 $RelocateLog = New-Object Microsoft.SqlServer.Management.Smo.RelocateFile($LDFName, $LDFDatei)
 
-if (0 -eq (Invoke-Sqlcmd -ServerInstance $Server -Query "select value_in_use from sys.configurations where name = 'xp_cmdshell'" -Username sa -Password $PW | select -expand value_in_use)) 
+if (0 -eq (Invoke-Sqlcmd -ServerInstance $Server -Query "select value_in_use from sys.configurations where name = 'xp_cmdshell'" -Username $User -Password $PW | select -expand value_in_use)) 
 {
-	Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC sp_configure 'show advanced options', 1" -Username sa -Password $PW
-	Invoke-Sqlcmd -ServerInstance $Server -Query "RECONFIGURE" -Username sa -Password $PW
-	Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC sp_configure 'xp_cmdshell', 1" -Username sa -Password $PW
-	Invoke-Sqlcmd -ServerInstance $Server -Query "RECONFIGURE" -Username sa -Password $PW
+	Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC sp_configure 'show advanced options', 1" -Username $User -Password $PW
+	Invoke-Sqlcmd -ServerInstance $Server -Query "RECONFIGURE" -Username $User -Password $PW
+	Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC sp_configure 'xp_cmdshell', 1" -Username $User -Password $PW
+	Invoke-Sqlcmd -ServerInstance $Server -Query "RECONFIGURE" -Username $User -Password $PW
 	echo "xp_cmdshell wurde aktiviert."
 }
 
-Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use $NW /persistent:no /user:dbtest dbtest'" -Username sa -Password $PW
+Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use $NW /persistent:no /user:dbtest dbtest'" -Username $User -Password $PW
 Restore-SqlDatabase -ServerInstance $Server -Database $DB -BackupFile $Ort$bakName -ReplaceDatabase -RelocateFile @($RelocateData,$RelocateNDF,$RelocateLog) -Credential $login
-Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use /d $NW'" -Username sa -Password $PW
+Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use /d $NW'" -Username $User -Password $PW
