@@ -7,7 +7,9 @@ param (
 [String]$NW="",
 [String]$NW2="",
 [String]$bakName="",
-[String]$PWFile=""
+[String]$PWFile="",
+[String]$netuser="",
+[String]$netpw=""
 )
 
 if ($Server -eq ""){$Server = Read-Host "SQLServer Namen oder IP(\Instanz) eingeben "}
@@ -57,6 +59,6 @@ if (0 -eq (Invoke-Sqlcmd -ServerInstance $Server -Query "select value_in_use fro
 	echo "xp_cmdshell wurde aktiviert."
 }
 
-Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use $NW /persistent:no /user:dbtest dbtest'" -Username $User -Password $PW
+Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use $NW /persistent:no /user:$netuser $netpw'" -Username $User -Password $PW
 Restore-SqlDatabase -ServerInstance $Server -Database $DB -BackupFile $Ort$bakName -ReplaceDatabase -RelocateFile @($RelocateData,$RelocateNDF,$RelocateLog) -Credential $login
 Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use /d $NW'" -Username $User -Password $PW
