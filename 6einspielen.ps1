@@ -3,11 +3,11 @@ param (
 [String]$User="sa",
 [String]$PW="manager",
 [String]$DB="",
-[String]$Ort="\\192.168.20.239\dbtest",
-[String]$NW="\\192.168.20.239\dbtest",
-[String]$NW2="\\192.168.111.251\dbtest",
+[String]$Ort="",
+[String]$NW="",
+[String]$NW2="",
 [String]$bakName="",
-[String]$PWFile="C:\tmp\PW.txt"
+[String]$PWFile=""
 )
 
 if ($Server -eq ""){$Server = Read-Host "SQLServer Namen oder IP(\Instanz) eingeben "}
