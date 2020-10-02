@@ -1,7 +1,7 @@
 param (
 [String]$Server="",
 [String]$User="",
-[String]$PW="r",
+[String]$PW="",
 [String]$DB="",
 [String]$Ort="",
 [String]$NW="",
@@ -62,3 +62,4 @@ if (0 -eq (Invoke-Sqlcmd -ServerInstance $Server -Query "select value_in_use fro
 Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use $NW /persistent:no /user:$netuser $netpw'" -Username $User -Password $PW
 Restore-SqlDatabase -ServerInstance $Server -Database $DB -BackupFile $Ort$bakName -ReplaceDatabase -RelocateFile @($RelocateData,$RelocateNDF,$RelocateLog) -Credential $login
 Invoke-Sqlcmd -ServerInstance $Server -Query "EXEC XP_CMDSHELL 'net use /d $NW'" -Username $User -Password $PW
+Write-Host "Das einspielen ist fertig"
